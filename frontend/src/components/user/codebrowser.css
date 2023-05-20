@@ -1,0 +1,8 @@
+.light-glassy-effect{
+    background-color: rgba(255, 255, 255, 0.5); /* set a semi-transparent white background color */
+  border-radius: 10px; /* round the corners of the element */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), /* create an inner glow effect */
+              0 0 20px rgba(255, 255, 255, 0.3), /* create an outer glow effect */
+              inset 0 0 20px rgba(255, 255, 255, 0.5); /* create an inset shadow to add depth */
+
+}
