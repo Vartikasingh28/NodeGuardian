@@ -63,14 +63,20 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            {/* <li className="nav-item"> */}
             <li className="nav-item">
               <NavLink className="nav-link" aria-current="page" to="/main/home">
                 Home
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to="/user/browser">
-                Browser Templates
+              <NavLink className="nav-link" aria-current="page" to="/main/contact">
+                Contact Us
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" aria-current="page" to="/main/feedback">
+                Feedback
               </NavLink>
             </li>
             <li className="nav-item">

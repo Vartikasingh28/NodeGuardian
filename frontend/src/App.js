@@ -17,6 +17,8 @@ import UserAuth from "./auth/UserAuth";
 import { useState } from "react";
 import {Toaster} from 'react-hot-toast';
 import MyTemplates from "./components/user/MyTemplates";
+import Feedback from "./components/main/Feedback";
+import Contact from "./components/main/Contact";
 
 function App() {
 
@@ -44,6 +46,10 @@ function App() {
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="home" element={<Home />} />
+                <Route path="contact" element={<Contact/>} />
+                <Route path="feedback" element={<Feedback/>} />
+
+
               </Route>
             </Routes>
           </UserProvider>

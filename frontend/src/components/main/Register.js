@@ -62,6 +62,12 @@ const Register = () => {
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-user fa-lg me-3 fa-fw" />
                           <div className="flex-fill mb-0">
+                          <label
+                              className="form-label"
+                              htmlFor="form3Example1c"
+                            >
+                              Your Name
+                            </label>
                             <input
                               type="text"
                               id="name"
@@ -69,17 +75,18 @@ const Register = () => {
                               value={signupform.values.name}
                               className="form-control"
                             />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example1c"
-                            >
-                              Your Name
-                            </label>
+                          
                           </div>
                         </div>
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-envelope fa-lg me-3 fa-fw" />
                           <div className=" flex-fill mb-0">
+                          <label
+                              className="form-label"
+                              htmlFor="form3Example3c"
+                            >
+                              Your Email
+                            </label>
                             <input
                               type="email"
                               id="email"
@@ -87,17 +94,19 @@ const Register = () => {
                               value={signupform.values.email}
                               className="form-control"
                             />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example3c"
-                            >
-                              Your Email
-                            </label>
+                          
                           </div>
                         </div>
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-lock fa-lg me-3 fa-fw" />
                           <div className=" flex-fill mb-0">
+                          Password
+                            <label
+                              className="form-label"
+                              htmlFor="form3Example4c"
+                            >
+                              {/* Password */}
+                            </label>
                             <input
                               type="password"
                               id="password"
@@ -105,28 +114,24 @@ const Register = () => {
                               value={signupform.values.password}
                               className="form-control"
                             />
-                            <label
-                              className="form-label"
-                              htmlFor="form3Example4c"
-                            >
-                              Password
-                            </label>
+                           
                           </div>
                         </div>
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-key fa-lg me-3 fa-fw" />
                           <div className="form-outline flex-fill mb-0">
-                            <input
-                              type="password"
-                              id="form3Example4cd"
-                              className="form-control"
-                            />
-                            <label
+                          <label
                               className="form-label"
                               htmlFor="form3Example4cd"
                             >
                               Repeat your password
                             </label>
+                            <input
+                              type="password"
+                              id="form3Example4cd"
+                              className="form-control"
+                            />
+                           
                           </div>
                         </div>
                         <div className="form-check d-flex justify-content-center mb-5">
