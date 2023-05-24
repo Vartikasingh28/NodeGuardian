@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import app_config, { structureData } from "../../config";
 import { toast } from "react-hot-toast";
 
@@ -6,14 +6,15 @@ const CodeGenerator = () => {
   const url = app_config.apiUrl;
   const [fileUrl, setFileUrl] = useState("");
   const selOptions = JSON.parse(sessionStorage.getItem("selOptions"));
-  // console.log(selOptions);
-  console.log(structureData[selOptions.main].files);
+  const inputRef = useRef(null);
+  console.log(selOptions);
+  // console.log(structureData[selOptions.main].files);
   const [dependencies, setDependencies] = useState([]);
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(sessionStorage.getItem("user"))
   );
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [libToDisplay, setLibToDisplay] = useState([]);
 
   // const generateBoilerplate = async () => {
@@ -24,18 +25,51 @@ const CodeGenerator = () => {
   //   setFileUrl(url + "/" + data.filename);
   // };
 
+  const initSelOptions = () => {
+    const selOptions = JSON.parse(sessionStorage.getItem("selOptions"));
+    if (selOptions.multi) {
+    }
+  };
+
   const generateCodeFromData = async () => {
-    const res = await fetch(url + "/util/generateCodeFromData", {
+    if (!inputRef.current.value) {
+      toast.error("Please Enter Project Name");
+      return;
+    }
+
+    let dataToSend = null;
+    let backendRoute = '';
+
+    if (selOptions.multi) {
+      backendRoute = 'generateMultiCodeFromData';
+      dataToSend = {
+        frontend: {
+          files: structureData[selOptions.frontend].files,
+          dependencies: dependencies.filter((dep) => dep.type === "frontend"),
+        },
+        backend: {
+          files: structureData[selOptions.backend].files,
+          dependencies: dependencies.filter((dep) => dep.type === "backend"),
+        },
+        name: inputRef.current.value.replace(" ", "_"),
+        createdBy: currentUser._id,
+      };
+    }else{
+      backendRoute = 'generateCodeFromData';
+      dataToSend = {
+        files: structureData[selOptions.main].files,
+        dependencies,
+        name: inputRef.current.value.replace(" ", "_"),
+        createdBy: currentUser._id,
+      };
+    }
+
+    const res = await fetch(url + `/util/${backendRoute}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        files: structureData[selOptions.main].files,
-        dependencies,
-        name: "test",
-        createdBy: currentUser._id,
-      }),
+      body: JSON.stringify(dataToSend),
     });
     console.log(res.status);
     const data = await res.json();
@@ -67,29 +101,37 @@ const CodeGenerator = () => {
       }
     });
     paths.push("");
-    console.log(paths);
+    // console.log(paths);
     return paths;
   };
   // getAllPaths(structureData[selOptions].files);
 
   // getFilesInHierarchy(structureData[selOptions].files);
 
-  const projectDirectories = () => {
-    console.log(structureData[selOptions.main].files);
-    let paths = getAllPaths(structureData[selOptions.main].files);
-    return paths.map((path) => {
+  const projectDirectories = (parentFolder, files) => {
+    // console.log(structureData[selOptions.main].files);
+    // let paths = getAllPaths(structureData[selOptions.main].files);
+    let paths = getAllPaths(files);
+    // paths.unshift(parentFolder);
+    return paths.map((path, index) => {
+      // console.log(path);
       return (
         <div>
           {path && (
-            <p className="h5">
+            <p className="h5" style={{ marginLeft: (parentFolder ? 50 : 0) }}>
               <i class="fa-solid fa-folder"></i> {path}
             </p>
           )}
 
-          {structureData[selOptions.main].files.map((file) =>
+          {files.map((file) =>
             file.path === path ? (
-              <p className="h5">
-                {file.path !== "" && <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>}
+              <p
+                className="h5"
+                style={{
+                  marginLeft:
+                    (file.path !== "" ? 50 : 0) + (parentFolder ? 50 : 0),
+                }}
+              >
                 <i class="fa-regular fa-file"></i> {file.name}
               </p>
             ) : null
@@ -97,6 +139,33 @@ const CodeGenerator = () => {
         </div>
       );
     });
+  };
+
+  const showDirectories = () => {
+    if (selOptions.multi) {
+      const frontendFiles = structureData[selOptions.frontend].files;
+      const backendFiles = structureData[selOptions.backend].files;
+      return (
+        <>
+          {
+            <p className="h5">
+              <i class="fa-solid fa-folder"></i> Frontend
+            </p>
+          }
+          {projectDirectories("Frontend", frontendFiles)}
+          <h1 className="mt-5"> </h1>
+          {
+            <p className="h5">
+              <i class="fa-solid fa-folder"></i> Backend
+            </p>
+          }
+          {projectDirectories("Backend", backendFiles)}
+        </>
+      );
+    } else {
+      const files = structureData[selOptions.main].files;
+      return projectDirectories('', files);
+    }
   };
 
   const addDependency = (dependency) => {
@@ -178,7 +247,7 @@ const CodeGenerator = () => {
               />
             </div>
             <div className="modal-body">
-              {showDependencies(structureData[selOptions.main].library, "add")}
+              {selOptions.multi ? showDependencies(structureData[selOptions.frontend].library, "add"): showDependencies(structureData[selOptions.main].library, "add")}
             </div>
             <div className="modal-footer">
               <button
@@ -199,13 +268,18 @@ const CodeGenerator = () => {
             <p className="display-4">
               <span className="fw-bold">NodeJS</span> Boilerplate Code Generator
             </p>
-            <hr />
+            <hr className="mb-4" />
+
+            <label className="text-muted mb-1">Enter Project Name </label>
+            <input className="form-control form-control-lg" ref={inputRef} />
+
             <div className="row">
               <div className="col-md-6">
                 <div className="p-5">
                   <h3>Project Directories</h3>
                   <hr />
-                  {projectDirectories()}
+                  {/* {projectDirectories("frontend")} */}
+                  {showDirectories()}
                 </div>
               </div>
               <div className="col-md-6">
